@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail; shopt -s nullglob
-btrfs_path='/var/bocker' && cgroups='cpu,cpuacct,memory';
-[[ $# -gt 0 ]] && while [ "${1:0:2}" == '--' ]; do OPTION=${1:2}; [[ $OPTION =~ = ]] && declare "BOCKER_${OPTION/=*/}=${OPTION/*=/}" || declare "BOCKER_${OPTION}=x"; shift; done
+
+# 同set -e，命令执行失败，脚本终止执行
+set -o errexit
+# 同set -u，遇到不存在的变量就会报错，并停止执行
+set -o nounset
+# 只要一个子命令失败，整个管道命令就失败，脚本就会终止执行
+set -o pipefail
+# 在进行匹配时，如果没有匹配任何文件名，会返回一个空串
+shopt -s nullglob
+
+# 工作路径
+btrfs_path='/var/bocker'
+# 用到的cgrougs
+cgroups='cpu,cpuacct,memory'
+
+# 如果参数数量大于0
+# 
+[[ $# -gt 0 ]] && while [ "${1:0:2}" == '--' ]; do
+  OPTION=${1:2}
+  [[ $OPTION =~ = ]] && declare "BOCKER_${OPTION/=*/}=${OPTION/*=/}" || declare "BOCKER_${OPTION}=x"; 
+  shift; 
+done
 
 function bocker_check() {
 	btrfs subvolume list "$btrfs_path" | grep -qw "$1" && echo 0 || echo 1
@@ -112,6 +131,7 @@ function bocker_help() { #HELP Display this message:\nBOCKER help
 	sed -n "s/^.*#HELP\\s//p;" < "$1" | sed "s/\\\\n/\n\t/g;s/$/\n/;s!BOCKER!${1/!/\\!}!g"
 }
 
+# 
 [[ -z "${1-}" ]] && bocker_help "$0"
 case $1 in
 	pull|init|rm|images|ps|run|exec|logs|commit) bocker_"$1" "${@:2}" ;;
