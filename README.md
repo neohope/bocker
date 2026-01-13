@@ -1,15 +1,15 @@
-# Bocker
-Docker implemented in around 100 lines of bash.
+# Bocker（补充代码注释）
+用约100行bash脚本实现的Docker。
 
-  * [Prerequisites](#prerequisites)
-  * [Example Usage](#example-usage)
-  * [Functionality: Currently Implemented](#functionality-currently-implemented)
-  * [Functionality: Not Yet Implemented](#functionality-not-yet-implemented)
-  * [License](#license)
+  * [前提条件](#前提条件)
+  * [示例用法](#示例用法)
+  * [已实现的功能](#功能-当前已实现)
+  * [暂未实现的功能](#功能-尚未实现)
+  * [许可证](#许可证)
 
-## Prerequisites
+## 前提条件
 
-The following packages are needed to run bocker.
+运行bocker需要安装以下软件包：
 
 * btrfs-progs
 * curl
@@ -19,20 +19,20 @@ The following packages are needed to run bocker.
 * util-linux >= 2.25.2
 * coreutils >= 7.5
 
-Because most distributions do not ship a new enough version of util-linux you will probably need to grab the sources from [here](https://www.kernel.org/pub/linux/utils/util-linux/v2.25/) and compile it yourself.
+由于大多数发行版预装的util-linux版本不够新，你可能需要从[这里](https://www.kernel.org/pub/linux/utils/util-linux/v2.25/)获取源码并自行编译。
 
-Additionally your system will need to be configured with the following:
+此外，你的系统还需要完成以下配置：
 
-* A btrfs filesystem mounted under `/var/bocker`
-* A network bridge called `bridge0` and an IP of 10.0.0.1/24
-* IP forwarding enabled in `/proc/sys/net/ipv4/ip_forward`
-* A firewall routing traffic from `bridge0` to a physical interface.
+* 一个btrfs文件系统挂载在 `/var/bocker` 目录下
+* 一个名为 `bridge0` 的网络桥接设备，且配置IP为 10.0.0.1/24
+* 在 `/proc/sys/net/ipv4/ip_forward` 中启用IP转发
+* 配置防火墙，将 `bridge0` 的流量路由到物理网络接口
 
-For ease of use a Vagrantfile is included which will build the needed environment.
+为了方便使用，本项目包含一个Vagrantfile文件，可用于构建所需的运行环境。
 
-Even if you meet the above prerequisites you probably still want to **run bocker in a virtual machine**. Bocker runs as root and among other things needs to make changes to your network interfaces, routing table, and firewall rules. **I can make no guarantees that it won't trash your system**.
+即使你满足上述所有前提条件，也建议**在虚拟机中运行bocker**。bocker需要以root权限运行，并且会修改网络接口、路由表和防火墙规则等系统配置。**我无法保证它不会破坏你的系统**。
 
-## Example Usage
+## 示例用法
 
 ```
 $ bocker pull centos 7
@@ -104,7 +104,7 @@ $ cat /sys/fs/cgroup/memory/ps_42188/memory.limit_in_bytes
 1024000000
 ```
 
-## Functionality: Currently Implemented
+## 功能：当前已实现
 
 * `docker build` †
 * `docker pull`
@@ -118,27 +118,20 @@ $ cat /sys/fs/cgroup/memory/ps_42188/memory.limit_in_bytes
 * Networking
 * Quota Support / CGroups
 
-† `bocker init` provides a very limited implementation of `docker build`
+† `bocker init` 提供了 `docker build` 的极简实现版本
 
-## Functionality: Not Yet Implemented
+## 功能：尚未实现
 
 * Data Volume Containers
 * Data Volumes
 * Port Forwarding
 
-## License
+## 许可证
 
-Copyright (C) 2015 Peter Wilmott
+版权所有 (C) 2015 Peter Wilmott
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+本程序是自由软件：你可以依据自由软件基金会发布的GNU通用公共许可证（第三版）或（可选）任何更新版本的条款，重新分发和/或修改本程序。
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+发布本程序的目的是希望它能发挥作用，但**不提供任何担保**；甚至没有隐含的适销性或特定用途适用性的担保。有关详细信息，请参阅GNU通用公共许可证。
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+你应已收到本程序附带的GNU通用公共许可证副本。如果没有，请参阅 <http://www.gnu.org/licenses/>。
